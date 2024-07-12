@@ -8,18 +8,27 @@ jobs:
     - name: Checkout theme repo
       uses: actions/checkout@main
       with:
-          repository: smallize/about.domain
+          repository: smallize/slmize
           token: ${{ secrets.REPO_TOKEN }}
           fetch-depth: 0 
+          submodules: true
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v2
       with:
           hugo-version: 'latest'
           extended: true
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install autoprefixer
+      run: npm install -D --save autoprefixer
+    - name: Install postcss-cli
+      run: npm install -D --save postcss-cli
     - name: Build 
-      run: hugo -b "https://about.slmize.com" --cleanDestinationDir --minify --templateMetrics --templateMetricsHints --enableGitInfo
+      run: hugo --config "configs/about.slmize.com.toml","configs/common.slmize.com.toml" -b "https://about.slmize.com" --cleanDestinationDir --minify --templateMetrics --templateMetricsHints --enableGitInfo
     - name: Deploy
-      run: hugo deploy --maxDeletes=-1 --target "slmize-com-production" --invalidateCDN --force
+      run: hugo deploy --config "configs/about.slmize.com.toml" --maxDeletes=-1 --target "production" --invalidateCDN --force
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS }}
