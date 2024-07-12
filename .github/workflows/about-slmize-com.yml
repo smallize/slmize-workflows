@@ -1,7 +1,12 @@
 name: about.slmize.com
 on:
   workflow_dispatch:
-jobs:
+    inputs:
+      environment:
+        description: 'Environment'
+        type: environment
+        default: staging
+        required: truejobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
